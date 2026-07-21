@@ -51,13 +51,19 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
 
     const winningCat = categories[targetCatIndex];
 
-    // Pick specific department from winning category
-    const validDepts = DEPARTMENTS.filter(d => winningCat.deptIds.includes(d.id));
+    // Pick specific department strictly from winning category
+    const validDepts = DEPARTMENTS.filter(d => d.categoryId === winningCat.id);
     const finalDept = validDepts[Math.floor(Math.random() * validDepts.length)] || DEPARTMENTS[0];
 
-    // Precise rotation calculation so pointer at TOP (12 o'clock) lands 100% accurately on target slice
+    // 100% Precise top-pointer peg angle calculation
+    // SVG has class '-rotate-90', so 0deg in CSS space is at top 12 o'clock.
+    // In raw SVG space, slice 0 center is at 18deg.
+    // Transformed by -90deg, its angle is (18 - 90) = -72deg.
+    // To bring slice targetCatIndex center to 0deg (top pointer), finalDegree must satisfy:
+    // (sliceCenterAngle - 90 + finalDegree) % 360 == 0
+    // => targetAngle = (450 - sliceCenterAngle) % 360
     const sliceCenterAngle = targetCatIndex * sliceAngle + sliceAngle / 2;
-    const targetAngle = (360 - sliceCenterAngle) % 360;
+    const targetAngle = (450 - sliceCenterAngle) % 360;
     const currentMod = ((rotationDegree % 360) + 360) % 360;
     const delta = (targetAngle - currentMod + 360) % 360;
 
