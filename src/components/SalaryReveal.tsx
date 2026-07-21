@@ -4,7 +4,7 @@ import confetti from "canvas-confetti";
 import type { PlacementProfile } from "../data/placementProfiles";
 import type { Department } from "../data/departments";
 import { soundFx } from "../utils/audio";
-import { Trophy, RefreshCw, Share2 } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { AIExplanation } from "./AIExplanation";
 
 interface SalaryRevealProps {
@@ -17,8 +17,6 @@ interface SalaryRevealProps {
   difference: number;
   isGolden: boolean;
   onPlayAgain: () => void;
-  onOpenLeaderboard: () => void;
-  onExportResult: () => void;
 }
 
 export const SalaryReveal: React.FC<SalaryRevealProps> = ({
@@ -29,9 +27,7 @@ export const SalaryReveal: React.FC<SalaryRevealProps> = ({
   accuracyRating,
   difference,
   isGolden,
-  onPlayAgain,
-  onOpenLeaderboard,
-  onExportResult
+  onPlayAgain
 }) => {
   const [displayedActual, setDisplayedActual] = useState<number>(0);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
@@ -183,43 +179,22 @@ export const SalaryReveal: React.FC<SalaryRevealProps> = ({
 
         <AIExplanation card={card} actualCTC={actualCTC} />
 
+        {/* Clean Next Round Action Button */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="mt-4 flex flex-wrap justify-center gap-3 w-full max-w-md"
+          className="mt-4 flex justify-center w-full max-w-sm"
         >
           <button
             onClick={() => {
               soundFx.playTick(600, 0.05);
               onPlayAgain();
             }}
-            className="flex-1 py-3 px-5 rounded-xl bg-gradient-to-r from-[#6D5DF6] to-[#7C3AED] font-extrabold text-xs text-white shadow-xl flex items-center justify-center space-x-2 transform hover:scale-105 transition-all cursor-pointer border border-white/20"
+            className="w-full py-3.5 px-8 rounded-2xl bg-gradient-to-r from-[#6D5DF6] via-[#7C3AED] to-[#00E5FF] font-extrabold text-base text-white shadow-2xl flex items-center justify-center space-x-2 transform hover:scale-105 transition-all cursor-pointer border border-white/20"
           >
-            <RefreshCw className="w-4 h-4" />
-            <span>Play Again</span>
-          </button>
-
-          <button
-            onClick={() => {
-              soundFx.playTick(600, 0.05);
-              onExportResult();
-            }}
-            className="flex-1 py-3 px-5 rounded-xl glass-panel font-extrabold text-xs text-[#00E5FF] hover:border-[#00E5FF]/40 shadow-xl flex items-center justify-center space-x-2 transform hover:scale-105 transition-all cursor-pointer border border-white/10"
-          >
-            <Share2 className="w-4 h-4" />
-            <span>Share Result</span>
-          </button>
-
-          <button
-            onClick={() => {
-              soundFx.playTick(600, 0.05);
-              onOpenLeaderboard();
-            }}
-            className="py-3 px-4 rounded-xl glass-panel font-extrabold text-xs text-yellow-400 hover:border-yellow-400/40 shadow-xl flex items-center justify-center space-x-2 transform hover:scale-105 transition-all cursor-pointer border border-white/10"
-          >
-            <Trophy className="w-4 h-4" />
-            <span>Leaderboard</span>
+            <RefreshCw className="w-5 h-5" />
+            <span>Play Next Round 🎯</span>
           </button>
         </motion.div>
 

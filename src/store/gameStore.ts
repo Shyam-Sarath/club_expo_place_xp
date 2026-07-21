@@ -3,16 +3,7 @@ import { PLACEMENT_PROFILES, type PlacementProfile } from "../data/placementProf
 import { type Department } from "../data/departments";
 import { soundFx } from "../utils/audio";
 
-export type GameStep = 'LANDING' | 'WHEEL' | 'SHUFFLE' | 'PREDICT' | 'REVEAL' | 'PROFILE' | 'LEADERBOARD' | 'BADGES';
-
-export interface LeaderboardEntry {
-  id: string;
-  name: string;
-  avgAccuracy: number;
-  gamesPlayed: number;
-  bestStreak: number;
-  avatar: string;
-}
+export type GameStep = 'LANDING' | 'WHEEL' | 'SHUFFLE' | 'PREDICT' | 'REVEAL' | 'PROFILE' | 'BADGES';
 
 export interface Badge {
   id: string;
@@ -32,21 +23,7 @@ export const ALL_BADGES: Badge[] = [
   { id: "dept_master", title: "VIT Campus Guru", description: "Guess candidates across at least 10 different departments.", icon: "🎓", reqText: "10 Departments Explored" }
 ];
 
-const INITIAL_LEADERBOARD: LeaderboardEntry[] = [
-  { id: "1", name: "Aravind_VIT", avgAccuracy: 94.2, gamesPlayed: 45, bestStreak: 12, avatar: "👨‍💻" },
-  { id: "2", name: "CyberNinja", avgAccuracy: 91.8, gamesPlayed: 38, bestStreak: 9, avatar: "🥷" },
-  { id: "3", name: "Priya_DataSc", avgAccuracy: 89.5, gamesPlayed: 52, bestStreak: 11, avatar: "👩‍🔬" },
-  { id: "4", name: "MechGeek99", avgAccuracy: 87.1, gamesPlayed: 29, bestStreak: 7, avatar: "⚙️" },
-  { id: "5", name: "Rohan_EEDrive", avgAccuracy: 85.4, gamesPlayed: 31, bestStreak: 6, avatar: "⚡" },
-  { id: "6", name: "Siddharth_SDE", avgAccuracy: 83.9, gamesPlayed: 24, bestStreak: 5, avatar: "🚀" },
-  { id: "7", name: "Ananya_AI", avgAccuracy: 82.0, gamesPlayed: 19, bestStreak: 4, avatar: "🤖" },
-  { id: "8", name: "Vikas_VLSI", avgAccuracy: 80.6, gamesPlayed: 22, bestStreak: 5, avatar: "🔬" },
-  { id: "9", name: "Deepak_Biotech", avgAccuracy: 78.4, gamesPlayed: 15, bestStreak: 3, avatar: "🧬" },
-  { id: "10", name: "Nisha_FashionTech", avgAccuracy: 76.2, gamesPlayed: 14, bestStreak: 3, avatar: "✨" }
-];
-
-const STORAGE_KEY_STATS = "guess_package_stats_v1";
-const STORAGE_KEY_LEADERBOARD = "guess_package_leaderboard_v1";
+const STORAGE_KEY_STATS = "guess_package_stats_v2";
 
 export function useGameStore() {
   const [currentStep, setCurrentStep] = useState<GameStep>('LANDING');
@@ -69,7 +46,7 @@ export function useGameStore() {
   const [isDailyChallenge, setIsDailyChallenge] = useState<boolean>(false);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(!soundFx.isMuted);
 
-  // Local storage state
+  // Local storage state for stats
   const [stats, setStats] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY_STATS);
@@ -90,16 +67,6 @@ export function useGameStore() {
     };
   });
 
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_LEADERBOARD);
-      if (saved) return JSON.parse(saved);
-    } catch {
-      // Fallback
-    }
-    return INITIAL_LEADERBOARD;
-  });
-
   // Sync stats to localStorage
   useEffect(() => {
     try {
@@ -108,15 +75,6 @@ export function useGameStore() {
       // Storage error
     }
   }, [stats]);
-
-  // Sync leaderboard to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_LEADERBOARD, JSON.stringify(leaderboard));
-    } catch {
-      // Storage error
-    }
-  }, [leaderboard]);
 
   const toggleSound = () => {
     const muted = soundFx.toggleMute();
@@ -289,8 +247,6 @@ export function useGameStore() {
     accuracyRating,
     difference,
     stats,
-    leaderboard,
-    setLeaderboard,
     soundEnabled,
     toggleSound,
     isDailyChallenge,

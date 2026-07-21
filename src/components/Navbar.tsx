@@ -1,5 +1,5 @@
 import React from "react";
-import { Volume2, VolumeX, Trophy, Medal, User, SlidersHorizontal, Flame, Sparkles } from "lucide-react";
+import { Volume2, VolumeX, Medal, User, SlidersHorizontal, Flame, Sparkles } from "lucide-react";
 import type { GameStep } from "../store/gameStore";
 import { soundFx } from "../utils/audio";
 
@@ -109,22 +109,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             title="Filter Departments & Difficulty"
           >
             <SlidersHorizontal className="w-4 h-4" />
-          </button>
-
-          {/* Leaderboard Trigger */}
-          <button
-            onClick={() => {
-              soundFx.playTick(600, 0.05);
-              setCurrentStep('LEADERBOARD');
-            }}
-            className={`p-1.5 rounded-xl border transition-all cursor-pointer ${
-              currentStep === 'LEADERBOARD'
-                ? "bg-[#6D5DF6]/20 border-[#6D5DF6] text-[#00E5FF]"
-                : "bg-[#111827] border-white/10 text-gray-300 hover:text-yellow-400 hover:border-yellow-400/40"
-            }`}
-            title="Leaderboard"
-          >
-            <Trophy className="w-4 h-4 text-yellow-400" />
           </button>
 
           {/* Badges Trigger */}
