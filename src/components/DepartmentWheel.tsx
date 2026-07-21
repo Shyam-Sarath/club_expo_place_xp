@@ -55,10 +55,14 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
     const validDepts = DEPARTMENTS.filter(d => winningCat.deptIds.includes(d.id));
     const finalDept = validDepts[Math.floor(Math.random() * validDepts.length)] || DEPARTMENTS[0];
 
-    const extraTurns = 360 * 6;
+    // Precise rotation calculation so pointer at TOP (12 o'clock) lands 100% accurately on target slice
     const sliceCenterAngle = targetCatIndex * sliceAngle + sliceAngle / 2;
-    // Pointer is at top (270deg):
-    const finalDegree = rotationDegree + extraTurns + (360 - sliceCenterAngle);
+    const targetAngle = (360 - sliceCenterAngle) % 360;
+    const currentMod = ((rotationDegree % 360) + 360) % 360;
+    const delta = (targetAngle - currentMod + 360) % 360;
+
+    const extraTurns = 360 * 6;
+    const finalDegree = rotationDegree + extraTurns + delta;
 
     setRotationDegree(finalDegree);
 
@@ -163,7 +167,7 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
                 const pathData = `M 250 250 L ${x1} ${y1} A 245 245 0 0 1 ${x2} ${y2} Z`;
                 const isEven = index % 2 === 0;
 
-                // Left side check to prevent upside-down text
+                // Left side check for upright reading
                 const isLeftSide = midAngle > 90 && midAngle < 270;
 
                 return (
@@ -171,40 +175,25 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
                     <path
                       d={pathData}
                       fill={cat.color}
-                      fillOpacity={isEven ? 0.85 : 0.65}
+                      fillOpacity={isEven ? 0.88 : 0.68}
                       stroke="#0B0F1A"
                       strokeWidth="3"
                     />
                     
-                    {/* Position text & icon along ray bisecting the slice */}
+                    {/* Text starting from WIDE OUTER EDGE (225px) extending inwards */}
                     <g transform={`rotate(${midAngle}, 250, 250)`}>
-                      
-                      {/* Icon placed closer to center */}
                       <text
-                        x="120"
+                        x="225"
                         y="254"
                         fill="#FFFFFF"
-                        fontSize="14"
-                        textAnchor="middle"
-                        transform={isLeftSide ? "rotate(180, 120, 254)" : undefined}
-                        className="select-none"
-                      >
-                        {cat.icon}
-                      </text>
-
-                      {/* Text Label perfectly centered inside slice segment */}
-                      <text
-                        x="175"
-                        y="254"
-                        fill="#FFFFFF"
-                        fontSize="12"
+                        fontSize="11.5"
                         fontWeight="800"
                         fontFamily="Inter, sans-serif"
-                        textAnchor="middle"
-                        transform={isLeftSide ? "rotate(180, 175, 254)" : undefined}
+                        textAnchor={isLeftSide ? "start" : "end"}
+                        transform={isLeftSide ? "rotate(180, 225, 254)" : undefined}
                         className="drop-shadow-lg select-none tracking-wide"
                       >
-                        {cat.shortCode}
+                        {cat.icon} {cat.shortCode}
                       </text>
                     </g>
                   </g>
