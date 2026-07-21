@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { DEPARTMENTS, type Department } from "../data/departments";
+import { DEPARTMENT_CATEGORIES, DEPARTMENTS, type Department, type DepartmentCategory } from "../data/departments";
 import { soundFx } from "../utils/audio";
-import { Trophy, RotateCw } from "lucide-react";
+import { RotateCw, Sparkles } from "lucide-react";
 
 interface DepartmentWheelProps {
   selectedDeptId: string;
@@ -15,37 +15,48 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
 }) => {
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const [rotationDegree, setRotationDegree] = useState<number>(0);
+  const [winnerCategory, setWinnerCategory] = useState<DepartmentCategory | null>(null);
   const [winnerDept, setWinnerDept] = useState<Department | null>(null);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
 
-  // Departments list (19 items)
-  const departmentsToSpin = DEPARTMENTS;
-  const numSlices = departmentsToSpin.length;
-  const sliceAngle = 360 / numSlices;
+  // 10 spacious categories for clean SVG wheel rendering
+  const categories = DEPARTMENT_CATEGORIES;
+  const numSlices = categories.length;
+  const sliceAngle = 360 / numSlices; // 36 degrees per slice!
 
   // Spin wheel action
   const handleSpin = () => {
     if (isSpinning) return;
     
     setIsSpinning(true);
+    setWinnerCategory(null);
     setWinnerDept(null);
     setIsZoomed(false);
 
     soundFx.playBuildup();
 
-    // Determine winning index
-    let targetIndex: number;
+    // Determine target category
+    let targetCatIndex: number;
     if (selectedDeptId !== "ALL") {
-      const idx = departmentsToSpin.findIndex(d => d.id === selectedDeptId);
-      targetIndex = idx !== -1 ? idx : Math.floor(Math.random() * numSlices);
+      const targetDept = DEPARTMENTS.find(d => d.id === selectedDeptId);
+      if (targetDept) {
+        const catIdx = categories.findIndex(c => c.id === targetDept.categoryId);
+        targetCatIndex = catIdx !== -1 ? catIdx : Math.floor(Math.random() * numSlices);
+      } else {
+        targetCatIndex = Math.floor(Math.random() * numSlices);
+      }
     } else {
-      targetIndex = Math.floor(Math.random() * numSlices);
+      targetCatIndex = Math.floor(Math.random() * numSlices);
     }
 
-    const winningDepartment = departmentsToSpin[targetIndex];
+    const winningCat = categories[targetCatIndex];
+
+    // Pick specific department from winning category
+    const validDepts = DEPARTMENTS.filter(d => winningCat.deptIds.includes(d.id));
+    const finalDept = validDepts[Math.floor(Math.random() * validDepts.length)] || DEPARTMENTS[0];
 
     const extraTurns = 360 * 6;
-    const sliceCenterAngle = targetIndex * sliceAngle + sliceAngle / 2;
+    const sliceCenterAngle = targetCatIndex * sliceAngle + sliceAngle / 2;
     const finalDegree = rotationDegree + extraTurns + (360 - sliceCenterAngle);
 
     setRotationDegree(finalDegree);
@@ -65,14 +76,15 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
     setTimeout(() => {
       clearInterval(interval);
       setIsSpinning(false);
-      setWinnerDept(winningDepartment);
+      setWinnerCategory(winningCat);
+      setWinnerDept(finalDept);
       setIsZoomed(true);
 
       soundFx.playVictory();
 
       setTimeout(() => {
-        onWheelComplete(winningDepartment);
-      }, 2000);
+        onWheelComplete(finalDept);
+      }, 2200);
 
     }, durationMs);
   };
@@ -91,8 +103,8 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
       <div 
         className="absolute inset-0 transition-colors duration-1000 pointer-events-none opacity-30"
         style={{
-          background: winnerDept 
-            ? `radial-gradient(circle at center, ${winnerDept.color}40 0%, transparent 70%)` 
+          background: winnerCategory 
+            ? `radial-gradient(circle at center, ${winnerCategory.color}40 0%, transparent 70%)` 
             : 'radial-gradient(circle at center, rgba(109,93,246,0.15) 0%, transparent 70%)'
         }}
       />
@@ -106,30 +118,30 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
           className="mb-2"
         >
           <span className="px-3 py-0.5 rounded-full text-[11px] font-bold bg-[#6D5DF6]/20 border border-[#6D5DF6]/40 text-[#00E5FF] uppercase tracking-wider">
-            Step 2: Department Selection
+            Step 2: Department Selection Wheel
           </span>
           <h2 className="text-2xl sm:text-4xl font-black text-white mt-1">
             Department Placement Wheel
           </h2>
           <p className="text-xs text-gray-400">
-            Spinning across 19 VIT programmes...
+            Spinning across Academic Divisions & CSE Specialisations
           </p>
         </motion.div>
 
-        {/* Sleek Compact Wheel Container */}
-        <div className="relative w-72 h-72 sm:w-[350px] sm:h-[350px] my-2 flex items-center justify-center perspective-1000 shrink-0">
+        {/* Sleek Spacious Wheel Container */}
+        <div className="relative w-80 h-80 sm:w-[380px] sm:h-[380px] my-2 flex items-center justify-center perspective-1000 shrink-0">
           
           {/* Top Neon Pointer */}
           <div className="absolute -top-4 z-30 flex flex-col items-center pointer-events-none">
-            <div className="w-7 h-7 bg-gradient-to-b from-[#00E5FF] to-[#6D5DF6] rotate-45 rounded-sm shadow-[0_0_20px_#00E5FF] border-2 border-white" />
+            <div className="w-8 h-8 bg-gradient-to-b from-[#00E5FF] to-[#6D5DF6] rotate-45 rounded-sm shadow-[0_0_20px_#00E5FF] border-2 border-white" />
           </div>
 
-          {/* Animated Rotating Wheel SVG */}
+          {/* Animated Rotating Wheel SVG (10 Spacious Slices) */}
           <motion.div
             className="w-full h-full rounded-full border-4 border-[#00E5FF]/40 shadow-[0_0_40px_rgba(109,93,246,0.3)] relative overflow-hidden"
             animate={{
               rotate: rotationDegree,
-              scale: isZoomed ? 1.1 : 1
+              scale: isZoomed ? 1.08 : 1
             }}
             transition={{
               rotate: { duration: 4.2, ease: [0.15, 0.99, 0.18, 1.0] },
@@ -137,7 +149,7 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
             }}
           >
             <svg viewBox="0 0 500 500" className="w-full h-full transform -rotate-90">
-              {departmentsToSpin.map((dept, index) => {
+              {categories.map((cat, index) => {
                 const startAngle = index * sliceAngle;
                 const endAngle = (index + 1) * sliceAngle;
                 
@@ -146,68 +158,81 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
                 const x2 = 250 + 245 * Math.cos((Math.PI * endAngle) / 180);
                 const y2 = 250 + 245 * Math.sin((Math.PI * endAngle) / 180);
                 
-                const largeArcFlag = sliceAngle > 180 ? 1 : 0;
-                const pathData = `M 250 250 L ${x1} ${y1} A 245 245 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
+                const pathData = `M 250 250 L ${x1} ${y1} A 245 245 0 0 1 ${x2} ${y2} Z`;
 
                 const isEven = index % 2 === 0;
 
                 return (
-                  <g key={dept.id}>
+                  <g key={cat.id}>
                     <path
                       d={pathData}
-                      fill={dept.color}
+                      fill={cat.color}
                       fillOpacity={isEven ? 0.85 : 0.65}
                       stroke="#0B0F1A"
-                      strokeWidth="2"
+                      strokeWidth="3"
                     />
                     
                     <g transform={`rotate(${startAngle + sliceAngle / 2}, 250, 250)`}>
+                      {/* Icon */}
                       <text
-                        x="375"
+                        x="345"
+                        y="254"
+                        fill="#FFFFFF"
+                        fontSize="14"
+                        textAnchor="middle"
+                        transform={`rotate(90, 345, 254)`}
+                        className="select-none"
+                      >
+                        {cat.icon}
+                      </text>
+
+                      {/* Text Label */}
+                      <text
+                        x="395"
                         y="254"
                         fill="#FFFFFF"
                         fontSize="12"
                         fontWeight="800"
                         fontFamily="Inter, sans-serif"
                         textAnchor="start"
-                        transform={`rotate(90, 375, 254)`}
+                        transform={`rotate(90, 395, 254)`}
                         className="drop-shadow-md select-none"
                       >
-                        {dept.shortCode}
+                        {cat.shortCode}
                       </text>
                     </g>
                   </g>
                 );
               })}
 
-              <circle cx="250" cy="250" r="45" fill="#0B0F1A" stroke="#00E5FF" strokeWidth="4" />
-              <circle cx="250" cy="250" r="22" fill="#6D5DF6" />
+              <circle cx="250" cy="250" r="50" fill="#0B0F1A" stroke="#00E5FF" strokeWidth="4" />
+              <circle cx="250" cy="250" r="25" fill="#6D5DF6" />
             </svg>
           </motion.div>
 
           <div className="absolute z-20 pointer-events-none">
-            <div className="w-14 h-14 rounded-full glass-panel flex items-center justify-center border border-white/20 shadow-xl">
-              <RotateCw className={`w-5 h-5 text-[#00E5FF] ${isSpinning ? 'animate-spin' : ''}`} />
+            <div className="w-16 h-16 rounded-full glass-panel flex items-center justify-center border border-white/20 shadow-xl">
+              <RotateCw className={`w-6 h-6 text-[#00E5FF] ${isSpinning ? 'animate-spin' : ''}`} />
             </div>
           </div>
 
         </div>
 
-        {/* Winner Overlay */}
+        {/* Winner Category & Department Overlay */}
         <AnimatePresence>
-          {winnerDept && (
+          {winnerDept && winnerCategory && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 15 }}
+              initial={{ opacity: 0, scale: 0.85, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="mt-2 glass-panel-glow px-6 py-4 rounded-2xl border border-[#00E5FF]/40 max-w-md w-full shadow-2xl"
+              className="mt-2 glass-panel-glow px-6 py-3.5 rounded-2xl border border-[#00E5FF]/40 max-w-md w-full shadow-2xl"
             >
               <div className="flex items-center justify-center space-x-2 text-amber-400 font-bold text-xs uppercase tracking-widest mb-0.5">
-                <Trophy className="w-3.5 h-3.5" />
-                <span>Department Selected!</span>
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{winnerCategory.name}</span>
               </div>
 
-              <h3 className="text-xl font-black text-white" style={{ color: winnerDept.color }}>
+              <h3 className="text-xl font-black text-white" style={{ color: winnerCategory.color }}>
                 {winnerDept.name}
               </h3>
               
