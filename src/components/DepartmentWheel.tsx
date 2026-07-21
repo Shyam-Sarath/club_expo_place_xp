@@ -51,7 +51,7 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
     setRotationDegree(finalDegree);
 
     const startTime = Date.now();
-    const durationMs = 4500;
+    const durationMs = 4200;
     
     const interval = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -72,7 +72,7 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
 
       setTimeout(() => {
         onWheelComplete(winningDepartment);
-      }, 2200);
+      }, 2000);
 
     }, durationMs);
   };
@@ -85,11 +85,11 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
   }, []);
 
   return (
-    <div className="relative min-h-[calc(100vh-65px)] w-full flex flex-col items-center justify-center px-4 py-8 overflow-hidden">
+    <div className="relative min-h-[calc(100vh-60px)] max-h-[calc(100vh-60px)] w-full flex flex-col items-center justify-center px-4 py-2 overflow-hidden">
       
       {/* Background radial glow */}
       <div 
-        className="absolute inset-0 transition-colors duration-1000 pointer-events-none opacity-40"
+        className="absolute inset-0 transition-colors duration-1000 pointer-events-none opacity-30"
         style={{
           background: winnerDept 
             ? `radial-gradient(circle at center, ${winnerDept.color}40 0%, transparent 70%)` 
@@ -101,39 +101,39 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
         
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
+          className="mb-2"
         >
-          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#6D5DF6]/20 border border-[#6D5DF6]/40 text-[#00E5FF] uppercase tracking-wider">
+          <span className="px-3 py-0.5 rounded-full text-[11px] font-bold bg-[#6D5DF6]/20 border border-[#6D5DF6]/40 text-[#00E5FF] uppercase tracking-wider">
             Step 2: Department Selection
           </span>
-          <h2 className="text-3xl md:text-5xl font-black text-white mt-2">
-            Spinning The Department Wheel
+          <h2 className="text-2xl sm:text-4xl font-black text-white mt-1">
+            Department Placement Wheel
           </h2>
-          <p className="text-sm md:text-base text-gray-400 mt-1">
-            Where will the placement algorithm land?
+          <p className="text-xs text-gray-400">
+            Spinning across 19 VIT programmes...
           </p>
         </motion.div>
 
-        {/* Wheel Container */}
-        <div className="relative w-80 h-80 sm:w-[420px] sm:h-[420px] my-4 flex items-center justify-center perspective-1000">
+        {/* Sleek Compact Wheel Container */}
+        <div className="relative w-72 h-72 sm:w-[350px] sm:h-[350px] my-2 flex items-center justify-center perspective-1000 shrink-0">
           
           {/* Top Neon Pointer */}
-          <div className="absolute -top-5 z-30 flex flex-col items-center pointer-events-none">
-            <div className="w-8 h-8 bg-gradient-to-b from-[#00E5FF] to-[#6D5DF6] rotate-45 rounded-sm shadow-[0_0_20px_#00E5FF] border-2 border-white" />
+          <div className="absolute -top-4 z-30 flex flex-col items-center pointer-events-none">
+            <div className="w-7 h-7 bg-gradient-to-b from-[#00E5FF] to-[#6D5DF6] rotate-45 rounded-sm shadow-[0_0_20px_#00E5FF] border-2 border-white" />
           </div>
 
           {/* Animated Rotating Wheel SVG */}
           <motion.div
-            className="w-full h-full rounded-full border-4 border-[#00E5FF]/40 shadow-[0_0_50px_rgba(109,93,246,0.3)] relative overflow-hidden"
+            className="w-full h-full rounded-full border-4 border-[#00E5FF]/40 shadow-[0_0_40px_rgba(109,93,246,0.3)] relative overflow-hidden"
             animate={{
               rotate: rotationDegree,
-              scale: isZoomed ? 1.15 : 1
+              scale: isZoomed ? 1.1 : 1
             }}
             transition={{
-              rotate: { duration: 4.5, ease: [0.15, 0.99, 0.18, 1.0] },
-              scale: { duration: 0.6, ease: "easeOut" }
+              rotate: { duration: 4.2, ease: [0.15, 0.99, 0.18, 1.0] },
+              scale: { duration: 0.5, ease: "easeOut" }
             }}
           >
             <svg viewBox="0 0 500 500" className="w-full h-full transform -rotate-90">
@@ -163,14 +163,14 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
                     
                     <g transform={`rotate(${startAngle + sliceAngle / 2}, 250, 250)`}>
                       <text
-                        x="370"
+                        x="375"
                         y="254"
                         fill="#FFFFFF"
-                        fontSize="13"
+                        fontSize="12"
                         fontWeight="800"
                         fontFamily="Inter, sans-serif"
                         textAnchor="start"
-                        transform={`rotate(90, 370, 254)`}
+                        transform={`rotate(90, 375, 254)`}
                         className="drop-shadow-md select-none"
                       >
                         {dept.shortCode}
@@ -180,14 +180,14 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
                 );
               })}
 
-              <circle cx="250" cy="250" r="50" fill="#0B0F1A" stroke="#00E5FF" strokeWidth="4" />
-              <circle cx="250" cy="250" r="25" fill="#6D5DF6" />
+              <circle cx="250" cy="250" r="45" fill="#0B0F1A" stroke="#00E5FF" strokeWidth="4" />
+              <circle cx="250" cy="250" r="22" fill="#6D5DF6" />
             </svg>
           </motion.div>
 
           <div className="absolute z-20 pointer-events-none">
-            <div className="w-16 h-16 rounded-full glass-panel flex items-center justify-center border border-white/20 shadow-xl">
-              <RotateCw className={`w-6 h-6 text-[#00E5FF] ${isSpinning ? 'animate-spin' : ''}`} />
+            <div className="w-14 h-14 rounded-full glass-panel flex items-center justify-center border border-white/20 shadow-xl">
+              <RotateCw className={`w-5 h-5 text-[#00E5FF] ${isSpinning ? 'animate-spin' : ''}`} />
             </div>
           </div>
 
@@ -197,25 +197,25 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
         <AnimatePresence>
           {winnerDept && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.7, y: 20 }}
+              initial={{ opacity: 0, scale: 0.8, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="mt-6 glass-panel-glow p-6 rounded-3xl border border-[#00E5FF]/40 max-w-md w-full shadow-2xl"
+              className="mt-2 glass-panel-glow px-6 py-4 rounded-2xl border border-[#00E5FF]/40 max-w-md w-full shadow-2xl"
             >
-              <div className="flex items-center justify-center space-x-2 text-amber-400 font-bold text-sm uppercase tracking-widest mb-1">
-                <Trophy className="w-4 h-4" />
+              <div className="flex items-center justify-center space-x-2 text-amber-400 font-bold text-xs uppercase tracking-widest mb-0.5">
+                <Trophy className="w-3.5 h-3.5" />
                 <span>Department Selected!</span>
               </div>
 
-              <h3 className="text-2xl font-black text-white" style={{ color: winnerDept.color }}>
+              <h3 className="text-xl font-black text-white" style={{ color: winnerDept.color }}>
                 {winnerDept.name}
               </h3>
               
-              <p className="text-xs text-gray-300 mt-2 font-medium">
+              <p className="text-[11px] text-gray-300 mt-1 font-medium leading-snug">
                 {winnerDept.description}
               </p>
 
-              <div className="mt-4 text-xs font-mono text-[#00E5FF] animate-pulse">
+              <div className="mt-2 text-[11px] font-mono text-[#00E5FF] animate-pulse">
                 Dealing Candidate Card Deck...
               </div>
             </motion.div>
@@ -225,9 +225,9 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
         {!isSpinning && !winnerDept && (
           <button
             onClick={handleSpin}
-            className="mt-6 px-8 py-3 rounded-xl bg-[#6D5DF6] hover:bg-[#7C3AED] font-bold text-white shadow-lg transition-all transform hover:scale-105 cursor-pointer"
+            className="mt-3 px-6 py-2.5 rounded-xl bg-[#6D5DF6] hover:bg-[#7C3AED] font-bold text-sm text-white shadow-lg transition-all transform hover:scale-105 cursor-pointer"
           >
-            Spin Again 🎯
+            Spin Wheel 🎯
           </button>
         )}
 

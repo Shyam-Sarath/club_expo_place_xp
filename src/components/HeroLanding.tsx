@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Trophy, Building2, ChevronRight, Zap } from "lucide-react";
+import { Sparkles, Trophy, Building2, ChevronRight, Zap, Flame } from "lucide-react";
 import { soundFx } from "../utils/audio";
 
 interface HeroLandingProps {
@@ -73,31 +73,36 @@ export const HeroLanding: React.FC<HeroLandingProps> = ({
   }, []);
 
   return (
-    <div className="relative min-h-[calc(100vh-65px)] w-full flex flex-col items-center justify-center overflow-hidden px-4 py-12">
+    <div className="relative min-h-[calc(100vh-60px)] max-h-[calc(100vh-60px)] w-full flex flex-col items-center justify-center overflow-hidden px-4 py-4">
       
       <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none opacity-60" />
 
-      <div className="absolute top-1/4 left-1/6 w-96 h-96 bg-[#6D5DF6]/20 rounded-full blur-[120px] pointer-events-none animate-float-slow" />
-      <div className="absolute bottom-1/4 right-1/6 w-96 h-96 bg-[#00E5FF]/15 rounded-full blur-[120px] pointer-events-none animate-float-reverse" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-900/10 rounded-full blur-[150px] pointer-events-none animate-pulse-glow" />
+      <div className="absolute top-1/4 left-1/6 w-80 h-80 bg-[#6D5DF6]/20 rounded-full blur-[100px] pointer-events-none animate-float-slow" />
+      <div className="absolute bottom-1/4 right-1/6 w-80 h-80 bg-[#00E5FF]/15 rounded-full blur-[100px] pointer-events-none animate-float-reverse" />
 
-      <div className="relative z-10 max-w-5xl mx-auto text-center flex flex-col items-center">
+      <div className="relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center">
         
+        {/* PLACE XP Club Expo Badge & Motto */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-panel-glow text-xs font-semibold text-[#00E5FF] mb-6 shadow-lg"
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full glass-panel-glow text-xs font-bold text-[#00E5FF] mb-4 shadow-lg"
         >
           <Sparkles className="w-3.5 h-3.5 text-[#00E5FF] animate-spin" style={{ animationDuration: '6s' }} />
-          <span>300+ Verified Placement Profiles Across 19 VIT Departments</span>
+          <span className="text-white font-extrabold">PLACE XP</span>
+          <span>•</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-white to-cyan-300 font-mono uppercase tracking-wider">
+            Equip • Engage • Execute
+          </span>
         </motion.div>
 
+        {/* Large Title */}
         <motion.h1
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-white mb-6 leading-[1.1]"
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white mb-3 leading-[1.1]"
         >
           Guess The{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6D5DF6] via-[#A78BFA] to-[#00E5FF]">
@@ -105,80 +110,83 @@ export const HeroLanding: React.FC<HeroLandingProps> = ({
           </span>
         </motion.h1>
 
+        {/* Subtitle */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-lg md:text-2xl font-medium text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed"
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="text-base sm:text-xl font-medium text-gray-300 max-w-xl mx-auto mb-6 leading-relaxed"
         >
           Think you know placements?
-          <br className="hidden sm:block" />
-          <span className="text-[#00E5FF]"> Predict the salary</span> before we reveal the CTC.
+          <br />
+          <span className="text-[#00E5FF] font-semibold">Predict the CTC</span> before we reveal the package.
         </motion.p>
 
+        {/* Glowing Main CTA Button */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="relative group mb-14"
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="relative group mb-8"
         >
-          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-[#6D5DF6] via-[#7C3AED] to-[#00E5FF] blur-xl opacity-75 group-hover:opacity-100 transition duration-500 group-hover:scale-105 animate-pulse" />
+          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-[#6D5DF6] via-[#7C3AED] to-[#00E5FF] blur-lg opacity-75 group-hover:opacity-100 transition duration-500 group-hover:scale-105 animate-pulse" />
 
           <button
             onClick={() => {
               soundFx.playTick(700, 0.1);
               onSpinClick();
             }}
-            className="relative px-10 py-5 rounded-2xl bg-gradient-to-r from-[#6D5DF6] to-[#7C3AED] font-extrabold text-xl text-white shadow-2xl flex items-center space-x-4 border border-white/20 transform group-hover:scale-105 transition-all duration-300 cursor-pointer active:scale-95"
+            className="relative px-8 py-4 rounded-2xl bg-gradient-to-r from-[#6D5DF6] to-[#7C3AED] font-extrabold text-lg text-white shadow-2xl flex items-center space-x-3 border border-white/20 transform group-hover:scale-105 transition-all duration-300 cursor-pointer active:scale-95"
           >
-            <span className="text-3xl">🎯</span>
+            <span className="text-2xl">🎯</span>
             <span className="tracking-wide">Spin the Wheel</span>
-            <ChevronRight className="w-6 h-6 text-[#00E5FF] group-hover:translate-x-1 transition-transform" />
+            <ChevronRight className="w-5 h-5 text-[#00E5FF] group-hover:translate-x-1 transition-transform" />
           </button>
         </motion.div>
 
+        {/* Compact Quick Stats Grid */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl"
+          transition={{ duration: 0.7, delay: 0.4 }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-3xl"
         >
-          <div className="glass-panel p-4 rounded-2xl border border-white/10 flex flex-col items-center">
-            <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#00E5FF] to-blue-400 font-mono">
+          <div className="glass-panel py-2.5 px-3 rounded-2xl border border-white/10 flex flex-col items-center">
+            <div className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#00E5FF] to-blue-400 font-mono">
               304
             </div>
-            <div className="text-xs text-gray-400 mt-1 font-medium flex items-center space-x-1">
-              <Building2 className="w-3.5 h-3.5" />
+            <div className="text-[11px] text-gray-400 font-medium flex items-center space-x-1">
+              <Building2 className="w-3 h-3" />
               <span>Real Profiles</span>
             </div>
           </div>
 
-          <div className="glass-panel p-4 rounded-2xl border border-white/10 flex flex-col items-center">
-            <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-[#6D5DF6] font-mono">
+          <div className="glass-panel py-2.5 px-3 rounded-2xl border border-white/10 flex flex-col items-center">
+            <div className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-[#6D5DF6] font-mono">
               19
             </div>
-            <div className="text-xs text-gray-400 mt-1 font-medium flex items-center space-x-1">
-              <Zap className="w-3.5 h-3.5" />
+            <div className="text-[11px] text-gray-400 font-medium flex items-center space-x-1">
+              <Zap className="w-3 h-3" />
               <span>VIT Departments</span>
             </div>
           </div>
 
-          <div className="glass-panel p-4 rounded-2xl border border-white/10 flex flex-col items-center">
-            <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-500 font-mono">
+          <div className="glass-panel py-2.5 px-3 rounded-2xl border border-white/10 flex flex-col items-center">
+            <div className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-500 font-mono">
               ₹1.1 CR
             </div>
-            <div className="text-xs text-gray-400 mt-1 font-medium flex items-center space-x-1">
-              <Trophy className="w-3.5 h-3.5 text-yellow-400" />
+            <div className="text-[11px] text-gray-400 font-medium flex items-center space-x-1">
+              <Trophy className="w-3 h-3 text-yellow-400" />
               <span>Highest Package</span>
             </div>
           </div>
 
-          <div className="glass-panel p-4 rounded-2xl border border-white/10 flex flex-col items-center">
-            <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 font-mono">
+          <div className="glass-panel py-2.5 px-3 rounded-2xl border border-white/10 flex flex-col items-center">
+            <div className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 font-mono">
               {highestStreak}
             </div>
-            <div className="text-xs text-gray-400 mt-1 font-medium flex items-center space-x-1">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="text-[11px] text-gray-400 font-medium flex items-center space-x-1">
+              <Flame className="w-3 h-3 text-emerald-400" />
               <span>Best Streak</span>
             </div>
           </div>
