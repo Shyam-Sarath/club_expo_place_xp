@@ -57,6 +57,7 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
 
     const extraTurns = 360 * 6;
     const sliceCenterAngle = targetCatIndex * sliceAngle + sliceAngle / 2;
+    // Pointer is at top (270deg):
     const finalDegree = rotationDegree + extraTurns + (360 - sliceCenterAngle);
 
     setRotationDegree(finalDegree);
@@ -129,14 +130,14 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
         </motion.div>
 
         {/* Sleek Spacious Wheel Container */}
-        <div className="relative w-80 h-80 sm:w-[380px] sm:h-[380px] my-2 flex items-center justify-center perspective-1000 shrink-0">
+        <div className="relative w-80 h-80 sm:w-[390px] sm:h-[390px] my-2 flex items-center justify-center perspective-1000 shrink-0">
           
           {/* Top Neon Pointer */}
           <div className="absolute -top-4 z-30 flex flex-col items-center pointer-events-none">
             <div className="w-8 h-8 bg-gradient-to-b from-[#00E5FF] to-[#6D5DF6] rotate-45 rounded-sm shadow-[0_0_20px_#00E5FF] border-2 border-white" />
           </div>
 
-          {/* Animated Rotating Wheel SVG (10 Spacious Slices) */}
+          {/* Animated Rotating Wheel SVG */}
           <motion.div
             className="w-full h-full rounded-full border-4 border-[#00E5FF]/40 shadow-[0_0_40px_rgba(109,93,246,0.3)] relative overflow-hidden"
             animate={{
@@ -152,6 +153,7 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
               {categories.map((cat, index) => {
                 const startAngle = index * sliceAngle;
                 const endAngle = (index + 1) * sliceAngle;
+                const midAngle = startAngle + sliceAngle / 2;
                 
                 const x1 = 250 + 245 * Math.cos((Math.PI * startAngle) / 180);
                 const y1 = 250 + 245 * Math.sin((Math.PI * startAngle) / 180);
@@ -159,8 +161,10 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
                 const y2 = 250 + 245 * Math.sin((Math.PI * endAngle) / 180);
                 
                 const pathData = `M 250 250 L ${x1} ${y1} A 245 245 0 0 1 ${x2} ${y2} Z`;
-
                 const isEven = index % 2 === 0;
+
+                // Left side check to prevent upside-down text
+                const isLeftSide = midAngle > 90 && midAngle < 270;
 
                 return (
                   <g key={cat.id}>
@@ -172,31 +176,33 @@ export const DepartmentWheel: React.FC<DepartmentWheelProps> = ({
                       strokeWidth="3"
                     />
                     
-                    <g transform={`rotate(${startAngle + sliceAngle / 2}, 250, 250)`}>
-                      {/* Icon */}
+                    {/* Position text & icon along ray bisecting the slice */}
+                    <g transform={`rotate(${midAngle}, 250, 250)`}>
+                      
+                      {/* Icon placed closer to center */}
                       <text
-                        x="345"
+                        x="120"
                         y="254"
                         fill="#FFFFFF"
                         fontSize="14"
                         textAnchor="middle"
-                        transform={`rotate(90, 345, 254)`}
+                        transform={isLeftSide ? "rotate(180, 120, 254)" : undefined}
                         className="select-none"
                       >
                         {cat.icon}
                       </text>
 
-                      {/* Text Label */}
+                      {/* Text Label perfectly centered inside slice segment */}
                       <text
-                        x="395"
+                        x="175"
                         y="254"
                         fill="#FFFFFF"
                         fontSize="12"
                         fontWeight="800"
                         fontFamily="Inter, sans-serif"
-                        textAnchor="start"
-                        transform={`rotate(90, 395, 254)`}
-                        className="drop-shadow-md select-none"
+                        textAnchor="middle"
+                        transform={isLeftSide ? "rotate(180, 175, 254)" : undefined}
+                        className="drop-shadow-lg select-none tracking-wide"
                       >
                         {cat.shortCode}
                       </text>
